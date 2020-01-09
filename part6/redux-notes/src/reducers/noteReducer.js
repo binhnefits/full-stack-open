@@ -42,7 +42,6 @@ export const createNote = content => {
 };
 
 export const toggleImportanceOf = id => {
-  // highlight-line
   return {
     type: "TOGGLE_IMPORTANCE",
     data: { id }
