@@ -1,21 +1,18 @@
 import React from "react";
 import { voteFor } from "../reducers/anecdoteReducer";
-import { notify } from "../reducers/notificationReducer";
+import { notify, suppress } from "../reducers/notificationReducer";
+import { connect } from "react-redux";
 
-const AnecdoteList = ({ store }) => {
-  const { anecdotes, filter } = store.getState();
-
+const AnecdoteList = props => {
   const handleVote = anecdote => {
-    store.dispatch(voteFor(anecdote.id));
-    store.dispatch(notify(`voted for '${anecdote.content}'`));
-    setTimeout(() => store.dispatch({ type: "CLOSE" }), 5000);
+    props.voteFor(anecdote.id);
+    props.notify(`voted for '${anecdote.content}'`);
+    setTimeout(() => props.suppress(), 5000);
   };
 
-  const showAnecdotes = () =>
-    anecdotes
-      .sort((a, b) => b.votes - a.votes)
-      .filter(anecdote => anecdote.content.includes(filter))
-      .map(anecdote => (
+  return (
+    <div>
+      {props.anecdotesToShow.map(anecdote => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
@@ -23,9 +20,27 @@ const AnecdoteList = ({ store }) => {
             <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
-      ));
-
-  return <div>{showAnecdotes()}</div>;
+      ))}
+    </div>
+  );
 };
 
-export default AnecdoteList;
+const anecdotesToShow = ({ anecdotes, filter }) => {
+  return anecdotes
+    .sort((a, b) => b.votes - a.votes)
+    .filter(anecdote => anecdote.content.includes(filter));
+};
+
+const mapStateToProps = state => {
+  return {
+    anecdotesToShow: anecdotesToShow(state)
+  };
+};
+
+const mapDispatchToProps = {
+  voteFor,
+  notify,
+  suppress
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList);

@@ -1,11 +1,12 @@
 import React from "react";
 import { setFilter } from "../reducers/filterReducer";
+import { connect } from "react-redux";
 
-const Filter = ({ store }) => {
+const Filter = props => {
   const handleChange = event => {
     event.preventDefault();
     const keyword = event.target.value;
-    store.dispatch(setFilter(keyword));
+    props.setFilter(keyword);
   };
 
   const style = {
@@ -19,4 +20,8 @@ const Filter = ({ store }) => {
   );
 };
 
-export default Filter;
+const mapDispatchToProps = {
+  setFilter
+};
+
+export default connect(null, mapDispatchToProps)(Filter);
