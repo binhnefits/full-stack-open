@@ -14,6 +14,11 @@
       "content": "new content",
       "important": false,
       "id": 3
+    },
+    {
+      "content": "that",
+      "important": false,
+      "id": 4
     }
   ]
 }

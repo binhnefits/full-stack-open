@@ -5,11 +5,10 @@ import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import Filter from "./components/Filter";
 import { initAnecdotes } from "./reducers/anecdoteReducer";
-import anecdotesService from "./services/anecdotes";
 
 const App = props => {
   useEffect(() => {
-    anecdotesService.getAll().then(anecdotes => props.initAnecdotes(anecdotes));
+    props.initAnecdotes();
     // eslint-disable-next-line
   }, []);
 

@@ -9,16 +9,10 @@ const notificationReducer = (state = null, action) => {
   }
 };
 
-export const notify = message => {
-  return {
-    type: "NOTIFY",
-    message
-  };
-};
-
-export const suppress = () => {
-  return {
-    type: "SUPPRESS"
+export const setNotification = (message, timeout) => {
+  return dispatch => {
+    dispatch({ type: "NOTIFY", message });
+    setTimeout(() => dispatch({ type: "SUPPRESS" }), timeout);
   };
 };
 
