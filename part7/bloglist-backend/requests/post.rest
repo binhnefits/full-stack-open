@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJpbmhwIiwiaWQiOiI1ZGZiMjg4ZTFlMjkwNDFjYzJmNTM3YmMiLCJpYXQiOjE1NzY3NDEwMTZ9.CSsNKS-e89sfQ9i4ktTRHekPX5KltN41VkABfQzHJZA
+
+{
+  "title": "Book",
+  "author": "Bob",
+  "url": "book.com",
+  "likes": 100
+}
