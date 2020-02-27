@@ -15,7 +15,7 @@ const Blog = props => {
   };
 
   const deleteHandle = () => {
-    // eslint-disable-next-line no-alert
+    // eslint-disable-next-line no-alertt
     if (window.confirm(`Are you sure you want to delete blog: ${title}`)) {
       props.deleteBlog(id);
     }
