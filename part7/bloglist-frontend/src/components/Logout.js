@@ -1,23 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { logoutUser } from '../reducers/userReducer';
 
-const Logout = ({ setUser }) => {
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedUser');
-    window.localStorage.clear();
-
-    setUser(null);
-  };
-
+const Logout = props => {
   return (
-    <button type="button" onClick={handleLogout}>
+    <button type="button" onClick={props.logoutUser}>
       Logout
     </button>
   );
 };
 
-Logout.propTypes = {
-  setUser: PropTypes.func.isRequired,
-};
-
-export default Logout;
+export default connect(null, { logoutUser })(Logout);

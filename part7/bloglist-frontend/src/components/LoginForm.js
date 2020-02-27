@@ -1,20 +1,38 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { useField } from '../hooks';
+import loginService from '../services/login';
+import blogService from '../services/blogs';
+import { setUser } from '../reducers/userReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-const Login = ({ handleLogin }) => {
+const LoginForm = props => {
   const username = useField('text');
   const password = useField('password');
 
-  const onSubmit = event => {
+  const loginHandle = async event => {
     event.preventDefault();
-    handleLogin({ username: username.value, password: password.value });
+
+    try {
+      const user = await loginService.login({
+        username: username.value,
+        password: password.value,
+      });
+
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
+      blogService.setToken(user.token);
+
+      props.setUser(user);
+    } catch (exception) {
+      props.setNotification('wrong username or password', 'error', 5000);
+    }
+
     username.reset();
     password.reset();
   };
 
   return (
-    <form className="loginForm" onSubmit={onSubmit}>
+    <form className="loginForm" onSubmit={loginHandle}>
       <div>
         username
         <input
@@ -36,8 +54,4 @@ const Login = ({ handleLogin }) => {
   );
 };
 
-Login.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-};
-
-export default Login;
+export default connect(null, { setUser, setNotification })(LoginForm);

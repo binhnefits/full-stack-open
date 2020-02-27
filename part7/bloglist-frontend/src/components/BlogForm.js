@@ -1,19 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { useField } from '../hooks';
+import { createBlog } from '../reducers/blogReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-const BlogForm = ({ handleBlogSubmit }) => {
+const BlogForm = props => {
   const title = useField('text');
   const author = useField('text');
   const url = useField('text');
 
   const onSubmit = event => {
     event.preventDefault();
-    handleBlogSubmit({
+    props.createBlog({
       title: title.value,
       author: author.value,
       url: url.value,
     });
+    props.setNotification(
+      `${title.value} by ${author.value} created`,
+      'info',
+      5000,
+    );
     title.reset();
     author.reset();
     url.reset();
@@ -29,8 +36,4 @@ const BlogForm = ({ handleBlogSubmit }) => {
   );
 };
 
-BlogForm.propTypes = {
-  handleBlogSubmit: PropTypes.func.isRequired,
-};
-
-export default BlogForm;
+export default connect(null, { createBlog, setNotification })(BlogForm);

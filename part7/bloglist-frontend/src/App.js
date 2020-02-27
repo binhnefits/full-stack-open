@@ -8,9 +8,11 @@ import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Toggleable';
 import { initBlogs } from './reducers/blogReducer';
-import { setUser } from './reducers/userReducer';
+import { setUser, initUser } from './reducers/userReducer';
+import { setNotification } from './reducers/notificationReducer';
 import { connect } from 'react-redux';
 import BlogList from './components/BlogList';
+import './index.css';
 
 const App = props => {
   const [user, setUser] = useState(null);
@@ -19,83 +21,16 @@ const App = props => {
   const [notifMsgType, setNotifMsgType] = useState('info');
 
   useEffect(() => {
-    // const getBlogs = async () => {
-    //   const initialBlogs = await blogService.getAll();
-    //   setBlogs(initialBlogs);
-    // };
-    // getBlogs();
     props.initBlogs();
+    props.initUser();
+    // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser');
-    if (loggedUserJSON) {
-      const loggedUser = JSON.parse(loggedUserJSON);
-      blogService.setToken(loggedUser.token);
-      setUser(loggedUser);
-      props.setUser(loggedUser);
-    }
-  }, []);
-
-  const addBlog = newBlog => setBlogs([...blogs, newBlog]);
-
-  const updateBlog = updatedBlog =>
-    setBlogs(
-      blogs.map(blog => (blog.id === updatedBlog.id ? updatedBlog : blog)),
-    );
-
-  const deleteBlog = deleteBlogId =>
-    setBlogs(blogs.filter(blog => blog.id !== deleteBlogId));
-
-  const showBlogs = () =>
-    blogs
-      .sort((a, b) => b.likes - a.likes)
-      .map(blog => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          curUser={user}
-          updateBlog={updateBlog}
-          deleteBlog={deleteBlog}
-        />
-      ));
-
-  const handleLogin = async credentials => {
-    try {
-      const requestedUser = await loginService.login(credentials);
-
-      window.localStorage.setItem('loggedUser', JSON.stringify(requestedUser));
-      blogService.setToken(requestedUser.token);
-
-      setUser(requestedUser);
-    } catch (exception) {
-      setNotifMsg('wrong username or password');
-      setNotifMsgType('error');
-      setTimeout(() => {
-        setNotifMsg(null);
-        setNotifMsgType('info');
-      }, 5000);
-    }
-  };
-
-  const handleBlogSubmit = async submiteddBlog => {
-    const newBlog = await blogService.create(submiteddBlog);
-
-    addBlog(newBlog);
-
-    setNotifMsg(
-      `new blog successfully added: ${submiteddBlog.title} - ${submiteddBlog.author}`,
-    );
-    setTimeout(() => {
-      setNotifMsg(null);
-    }, 5000);
-  };
-
-  if (user === null) {
+  if (props.curUser === null) {
     return (
       <div>
-        <Notification message={notifMsg} type={notifMsgType} />
-        <LoginForm handleLogin={handleLogin} />
+        <Notification />
+        <LoginForm />
       </div>
     );
   }
@@ -103,17 +38,26 @@ const App = props => {
   return (
     <div>
       <h1>Blogs</h1>
+      {props.curUser.username} <Logout setUser={setUser} />
+      <Notification />
       <BlogList />
-      {/* <Notification message={notifMsg} type={notifMsgType} />
-      {user.username} <Logout setUser={setUser} />
       <h3>Create New Blog </h3>
       <Togglable buttonLabel="new blog">
-        <BlogForm handleBlogSubmit={handleBlogSubmit} />
+        <BlogForm />
       </Togglable>
-      <h3>Blogs </h3>
-      <div className="blogs">{showBlogs()}</div> */}
     </div>
   );
 };
 
-export default connect(null, { initBlogs, setUser })(App);
+const mapStateToProp = state => {
+  return {
+    curUser: state.user,
+  };
+};
+
+export default connect(mapStateToProp, {
+  initBlogs,
+  setUser,
+  initUser,
+  setNotification,
+})(App);

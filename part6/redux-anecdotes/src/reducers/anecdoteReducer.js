@@ -21,6 +21,23 @@ const acnecdoteReducer = (state = [], action) => {
   }
 };
 
+// try {
+//   const requestUser = async credentials => {
+//     return await loginService.login(credentials);
+//   };
+//   const user = requestUser({
+//     username: username.value,
+//     password: password.value,
+//   });
+
+//   window.localStorage.setItem('loggedUser', JSON.stringify(user));
+//   blogService.setToken(user.token);
+
+//   props.setUser(user);
+// } catch (exception) {
+//   props.setNotification('wrong username or password', 'error', 5000);
+// }
+
 export const initAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdotesService.getAll();
