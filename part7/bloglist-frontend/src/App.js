@@ -3,31 +3,37 @@ import LoginForm from './components/LoginForm';
 import Logout from './components/Logout';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import Blog from './components/Blog';
+import Blog from './components/BlogOld';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Toggleable';
+import { initBlogs } from './reducers/blogReducer';
+import { setUser } from './reducers/userReducer';
+import { connect } from 'react-redux';
+import BlogList from './components/BlogList';
 
-function App() {
+const App = props => {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [notifMsg, setNotifMsg] = useState(null);
   const [notifMsgType, setNotifMsgType] = useState('info');
 
   useEffect(() => {
-    const getBlogs = async () => {
-      const initialBlogs = await blogService.getAll();
-      setBlogs(initialBlogs);
-    };
-    getBlogs();
+    // const getBlogs = async () => {
+    //   const initialBlogs = await blogService.getAll();
+    //   setBlogs(initialBlogs);
+    // };
+    // getBlogs();
+    props.initBlogs();
   }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
-      setUser(loggedUser);
       blogService.setToken(loggedUser.token);
+      setUser(loggedUser);
+      props.setUser(loggedUser);
     }
   }, []);
 
@@ -97,16 +103,17 @@ function App() {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={notifMsg} type={notifMsgType} />
+      <BlogList />
+      {/* <Notification message={notifMsg} type={notifMsgType} />
       {user.username} <Logout setUser={setUser} />
       <h3>Create New Blog </h3>
       <Togglable buttonLabel="new blog">
         <BlogForm handleBlogSubmit={handleBlogSubmit} />
       </Togglable>
       <h3>Blogs </h3>
-      <div className="blogs">{showBlogs()}</div>
+      <div className="blogs">{showBlogs()}</div> */}
     </div>
   );
-}
+};
 
-export default App;
+export default connect(null, { initBlogs, setUser })(App);

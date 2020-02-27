@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import blogService from '../services/blogs';
+import { connect } from 'react-redux';
+import { likeBlog, deleteBlog } from '../reducers/blogReducer';
 
-const Blog = ({ blog, curUser, updateBlog, deleteBlog }) => {
+const Blog = props => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { id, title, author, url, user, likes } = props.blogData;
 
   const blogStyle = {
     paddingTop: 10,
@@ -13,20 +14,10 @@ const Blog = ({ blog, curUser, updateBlog, deleteBlog }) => {
     marginBottom: 5,
   };
 
-  const likeHandle = async () => {
-    const updatedBlog = await blogService.update(blog.id, {
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1,
-    });
-    updateBlog(updatedBlog);
-  };
-
-  const deleteHandle = async () => {
+  const deleteHandle = () => {
     // eslint-disable-next-line no-alert
-    if (window.confirm(`Are you sure you want to delete blog: ${blog.title}`)) {
-      await blogService.deleteBlog(blog.id);
-      deleteBlog(blog.id);
+    if (window.confirm(`Are you sure you want to delete blog: ${title}`)) {
+      props.deleteBlog(id);
     }
   };
 
@@ -40,20 +31,20 @@ const Blog = ({ blog, curUser, updateBlog, deleteBlog }) => {
         tabIndex={0}
         className="blogTitle"
       >
-        {blog.title} - {blog.author}
+        {title} - {author}
       </div>
       {isExpanded ? (
         <div style={blogStyle} className="blogInfo">
-          <div>{blog.url}</div>
+          <div>{url}</div>
           <div>
-            {blog.likes}{' '}
-            <button type="button" onClick={likeHandle}>
+            {likes}{' '}
+            <button type="button" onClick={() => props.likeBlog()}>
               like
             </button>
           </div>
-          <div>{`added by ${blog.user.username}`}</div>
+          <div>{`added by ${user.username}`}</div>
           <div>
-            {blog.user.username === curUser.username ? (
+            {props.blogData.user.username === props.curUser.username ? (
               <button type="button" onClick={deleteHandle}>
                 delete
               </button>
@@ -65,11 +56,10 @@ const Blog = ({ blog, curUser, updateBlog, deleteBlog }) => {
   );
 };
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  curUser: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
+const mapStateToProps = state => {
+  return {
+    curUser: state.user,
+  };
 };
 
-export default Blog;
+export default connect(mapStateToProps, { likeBlog, deleteBlog })(Blog);
