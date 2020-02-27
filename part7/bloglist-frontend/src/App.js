@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import Logout from './components/Logout';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import Blog from './components/BlogOld';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Toggleable';
@@ -15,11 +12,6 @@ import BlogList from './components/BlogList';
 import './index.css';
 
 const App = props => {
-  const [user, setUser] = useState(null);
-  const [blogs, setBlogs] = useState([]);
-  const [notifMsg, setNotifMsg] = useState(null);
-  const [notifMsgType, setNotifMsgType] = useState('info');
-
   useEffect(() => {
     props.initBlogs();
     props.initUser();
@@ -38,7 +30,7 @@ const App = props => {
   return (
     <div>
       <h1>Blogs</h1>
-      {props.curUser.username} <Logout setUser={setUser} />
+      {props.curUser.username} <Logout />
       <Notification />
       <BlogList />
       <h3>Create New Blog </h3>

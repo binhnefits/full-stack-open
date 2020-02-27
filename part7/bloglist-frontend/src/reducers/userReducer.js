@@ -1,5 +1,4 @@
 import blogService from '../services/blogs';
-import loginService from '../services/login';
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
@@ -42,24 +41,6 @@ export const logoutUser = () => {
     dispatch({
       type: 'UNSET_USER',
     });
-  };
-};
-
-export const loginUser = credentials => {
-  return async dispatch => {
-    try {
-      const requestedUser = await loginService.login(credentials);
-
-      window.localStorage.setItem('loggedUser', JSON.stringify(requestedUser));
-      blogService.setToken(requestedUser.token);
-
-      dispatch({
-        type: 'SET_USER',
-        user: requestedUser,
-      });
-    } catch (exception) {
-      throw exception;
-    }
   };
 };
 
