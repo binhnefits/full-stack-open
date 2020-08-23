@@ -25,3 +25,5 @@ yarn-error.log*
 *.code-workspace
 
 part7/react-webpack/node_modules
+
+node_modules/
